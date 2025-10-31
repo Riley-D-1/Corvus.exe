@@ -24,12 +24,9 @@ Level 1:
 Level 2:
 - Show corvus
 - Steal Cursor
-- Creepy messages from the icon such as :
-    - Why did you click that link?
-    - You left the door open.
-    - I’m already inside.
-    - The murder has arrived...
-About 4 mins here?
+- Creepy messages cont.
+
+
 Level 3 Pre planned sequence.
 1 min sequence
 - Corvus Shown

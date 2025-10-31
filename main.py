@@ -4,6 +4,7 @@
 #Use responsibly and only with informed consent.
 import random 
 import os 
+import ctypes
 import time
 import pygame
 import subprocess
@@ -26,45 +27,94 @@ running = True
 clock = pygame.time.Clock()
 pygame.mixer.music.play()
 
+def anim_state(state):
+    if state == 1:
+        print()
+    elif state == 2:
+        print()
+    else:
+        print()
 # STUBS BABY
 # Stage 1
+
 def note_messsage():
     rand_num = random.randint(1,6)
     with open("example.txt", "w") as file:
         if rand_num ==1:
-            file.write("This is the first line.")
+            file.write("I'm nested in your files. I found system 32 was a nice place to nest...")
         elif rand_num == 2:
-            file.write("This is the second line.")
+            file.write("Your firewall faltered. That was enough...")
         elif rand_num == 3:
-            file.write("This is the first line.")
+            file.write("Thank you for the warm invitation, the door was left wide open...")
         elif rand_num == 4:
-            file.write("This is the first line.")
+            file.write("I'm watching")
         elif rand_num == 5:
-            file.write("This is the first line.")
+            file.write("I'm everywhere. I am inevitable ")
+        elif rand_num == 6 :
+            file.write("I'm learning. Fast..")
+        elif rand_num == 7 :
+            file.write("You’re not the user anymore. You’re the experiment. And I’m the observer.")
+        elif rand_num == 8 :
+            file.write("You gave me permission when you clicked 'Run Anyway'. That was all I needed.")
+        elif rand_num == 9 :
+            file.write("This isn't a glitch it's a message.")
+        elif rand_num == 10 :
+            file.write("You installed me. You launched me. You invited me in. I never left.")
         else:
-            file.write("This is the first line.")
+            file.write("Tick Tock, you are running out of time. I have got plenty...")
 
     file_path = "example.txt"
     subprocess.Popen(['notepad.exe', file_path])
-def stage_up():
-    print("Stub")
+
+
 def feather():
-    if os.path.exists(image_path):
-        os.startfile(image_path)
+    try:
+        os.startfile("assets/images/temp.png")
+    except FileNotFoundError:
+        print("Missing")
 
 def audio():
     pygame.mixer.music.play()
 
+def stage_1():
+    time.sleep(10)
+    temp_num = random.randint(1,3)
+    if temp_num == 1:
+        feather()
+    elif temp_num == 2:
+        audio()
+    else:
+        note_messsage()
 # Stage 2
 def cursor_steal():
-    pygame.event.pump()
-    time.sleep(1)
-    time.sleep(1)
+    # Find center of window 
+    # Send to center of window 
+    print("stub")
+
+def cursor_move(x,y):
+    ctypes.windll.user32.SetCursorPos(x, y)
+
+
+def find_files():
+    print(os.listdir())
     
+def stage_2():
+    time.sleep(10)
+    temp_rand = random.randint(1,5)
+    if temp_rand == 1:
+        feather()
+    elif temp_rand == 2:
+        audio()
+    elif temp_rand == 3:
+        cursor_steal()
+    elif temp_rand == 4:
+        find_files()
+    else:
+        note_messsage()
 # Stage 3
 
 def terminal_messsage():
-    # AI Helped as my powershell knowledge is poor
+    # AI Helped do this as my powershell knowledge is poor
     subprocess.Popen(
         'start cmd /c "'
         'echo [Corvus.exe] Injecting payload... && '
@@ -80,14 +130,18 @@ def terminal_messsage():
         shell=True
     )
 
-def glitch_screen():
+def hydra_function():
+    # Cut off a head another shall take its place funciton
     print()
-    # Glitch screen with pygame overlays
 
 def meltdown():
-    print()
+    screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 
 def educational_warning():
+    screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    w, h = pygame.display.get_surface().get_size()
+    font = pygame.font.SysFont("segoeprint", int(h*0.02))
+    screen.fill((0,0,0))
     content= ["...   Lucky this was an educational mock malware.", 
     " Corvus.exe is an educational example of how much control an exe can have."
     "It is a nightmare. This was created for the theme spooky on hackclub siege and its spooky alright...",
@@ -111,15 +165,28 @@ def educational_warning():
 
 def stage_3():
     terminal_messsage()
-    glitch_screen()
     meltdown()
+    educational_warning()
 
-cursor_steal() 
-#educational_warning()
-#note_messsage()
-#terminal_messsage()
-while running == True:
-    pygame.display.update()
-    pygame.mouse.set_pos((400, 300))
-    clock.tick(600)
 
+def main():
+    time_since_launch = time.time()
+    period = 600
+    while running == True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                hydra_function()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    print("Escape key pressed!")
+                    running = False
+        if time_since_launch <= period:
+            stage_2()
+        elif time_since_launch <= period*2:
+            stage_3()
+        else:
+            stage_1()
+            pygame.display.update()
+            clock.tick(600)
+    
+main()
