@@ -12,8 +12,8 @@ import subprocess
 pygame.mixer.pre_init(44100,-16,2,2048)
 pygame.init()
 try:
-	#programIcon = pygame.image.load('assets/images/Icon.png') # Load the Icon
-	#pygame.display.set_icon(programIcon) # Set Icon
+	programIcon = pygame.image.load('assets/images/corvus.png') # Load the Icon
+	pygame.display.set_icon(programIcon) # Set Icon
 	pygame.mixer.music.load('assets/music/Crow_caw_1.mp3')
 	pygame.mixer.music.set_volume(0.5)
 	music = True
@@ -21,7 +21,7 @@ except FileNotFoundError:
 	print("File not found")
 	music = False
 
-screen = pygame.display.set_mode((250, 250), pygame.NOFRAME)
+screen = pygame.display.set_mode((160, 250), pygame.NOFRAME)
 pygame.display.set_caption("Corvus.exe")
 running = True
 clock = pygame.time.Clock()
@@ -69,7 +69,7 @@ def note_messsage():
 
 def feather():
     try:
-        os.startfile("assets/images/temp.png")
+        os.startfile("assets/images/feather.png")
     except FileNotFoundError:
         print("Missing")
 
@@ -172,7 +172,9 @@ def stage_3():
 def main():
     time_since_launch = time.time()
     period = 600
+    running = True
     while running == True:
+        pygame.display.set_icon(programIcon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 hydra_function()
