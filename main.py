@@ -9,11 +9,13 @@ import time
 import pygame
 import subprocess
 
+
 pygame.mixer.pre_init(44100,-16,2,2048)
 pygame.init()
+pygame.font.init() 
 try:
-	programIcon = pygame.image.load('assets/images/corvus.png') # Load the Icon
-	pygame.display.set_icon(programIcon) # Set Icon
+	program_icon = pygame.image.load('assets/images/icon.png') # Load the Icon
+	pygame.display.set_icon(program_icon) # Set Icon
 	pygame.mixer.music.load('assets/music/Crow_caw_1.mp3')
 	pygame.mixer.music.set_volume(0.5)
 	music = True
@@ -27,19 +29,33 @@ running = True
 clock = pygame.time.Clock()
 pygame.mixer.music.play()
 
-def anim_state(state):
-    if state == 1:
-        print()
-    elif state == 2:
-        print()
-    else:
-        print()
+# Class for core methods of window
+class corvus:
+    def __init__(self):
+        self.x_pos = 1
+        self.y_pos = 1
+    def move(self,x,y):
+        self.x_pos += x
+        self.y_pos += y 
+    def anim_state(self,state):
+        if state == 1:
+            background = pygame.image.load("assets/images/corvus.png").convert()
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+        elif state == 2:
+            background = pygame.image.load("assets/images/corvus.png").convert()
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+        else:
+            print()
+
 # STUBS BABY
 # Stage 1
 
 def note_messsage():
-    rand_num = random.randint(1,6)
-    with open("example.txt", "w") as file:
+    # Used as a random num selector
+    rand_num = random.randint(1,11)
+    with open("Message.txt", "w") as file:
         if rand_num ==1:
             file.write("I'm nested in your files. I found system 32 was a nice place to nest...")
         elif rand_num == 2:
@@ -63,9 +79,9 @@ def note_messsage():
         else:
             file.write("Tick Tock, you are running out of time. I have got plenty...")
 
-    file_path = "example.txt"
+    file_path = "message.txt"
+    # Opens the file from where it is written.
     subprocess.Popen(['notepad.exe', file_path])
-
 
 def feather():
     try:
@@ -76,7 +92,8 @@ def feather():
 def audio():
     pygame.mixer.music.play()
 
-def stage_1():
+def stage_1(the_one):
+    the_one.anim_state(1)
     time.sleep(10)
     temp_num = random.randint(1,3)
     if temp_num == 1:
@@ -94,8 +111,8 @@ def cursor_steal():
 def cursor_move(x,y):
     ctypes.windll.user32.SetCursorPos(x, y)
 
-
 def find_files():
+    # Need to fill
     print(os.listdir())
     
 def stage_2():
@@ -130,12 +147,10 @@ def terminal_messsage():
         shell=True
     )
 
-def hydra_function():
-    # Cut off a head another shall take its place funciton
-    print()
 
 def meltdown():
     screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    pygame.WINDOWSIZECHANGED
 
 def educational_warning():
     screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
@@ -160,7 +175,8 @@ def educational_warning():
     ]
     for item in content:
         for char in item:
-            print()
+            font.render(char)
+
             #print(char)
 
 def stage_3():
@@ -170,25 +186,29 @@ def stage_3():
 
 
 def main():
+    # Caculate time since launch to trigger diffrent stages. 
     time_since_launch = time.time()
     period = 600
+    # Time period before starting next stage. Stage 2 takes 1*period and the 3rd stage is double
+    the_one = corvus()
     running = True
     while running == True:
-        pygame.display.set_icon(programIcon) # Set Icon
+        pygame.display.set_icon(program_icon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                hydra_function()
+                print("NOPE")
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    # Make 
                     print("Escape key pressed!")
                     running = False
         if time_since_launch <= period:
-            stage_2()
+            stage_2(the_one)
         elif time_since_launch <= period*2:
-            stage_3()
+            stage_3(the_one)
         else:
-            stage_1()
-            pygame.display.update()
+            stage_1(the_one)
+            pygame.display.flip()
             clock.tick(600)
-    
+    pygame.quit()
 main()
