@@ -31,8 +31,6 @@ except FileNotFoundError:
 	print("File not found")
 	music = False
 
-
-
 pygame.display.set_caption("Corvus.exe")
 running = True
 clock = pygame.time.Clock()
@@ -68,7 +66,7 @@ class corvus:
         self.move()
         self.anim_state()
     def cursor_steal(self):
-        
+        # Fill this function with more infomation
         ctypes.windll.user32.SetCursorPos(self.x_pos, self.y_pos)
     def move(self,target_x,target_y):
         # Position using pygame vectors stored 2 values (x and y respectively)
@@ -141,8 +139,17 @@ def audio():
     # Done, Simple but it works
     pygame.mixer.music.play()
 
+def pygame_screen_message(message,text_colour,screen_colour):
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    w, h = pygame.display.get_surface().get_size()
+    screen.fill(screen_colour)
+    font = pygame.font.SysFont("consolas", 48)
+    text = font.render(message, True, text_colour)
+    screen.blit(text,(100,100))
+    pygame.display.flip()
+    time.sleep(3)
+
 def find_files():
-    # Need to fix
     files = os.listdir(os.path.expanduser("~/Downloads"))
     rand_file = random.choice(files)
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -150,7 +157,7 @@ def find_files():
     screen.fill((0, 0, 0))
     font = pygame.font.SysFont("consolas", 48)
     text = font.render(f"Anything intreasting in {rand_file}?", True, (255, 0, 0))
-    screen.blit(text,(100,100))
+    screen.blit(text,(w//2,h//2))
     pygame.display.flip()
     time.sleep(3)
     
@@ -164,8 +171,6 @@ def chaos(the_one):
     time.sleep(10)
     temp_rand = random.randint(1,5)
     if temp_rand == 1:
-        # Removed due to problems
-        #feather()
         meme()
     elif temp_rand == 2:
         audio()
@@ -177,7 +182,7 @@ def chaos(the_one):
         note_messsage()
 
 # Stage 3
-# All preset sequence to scare those involved.
+# All preset sequence to scare
 def terminal_messsage():
     # AI Helped do this as my powershell knowledge is poor
     subprocess.Popen(
@@ -196,19 +201,10 @@ def terminal_messsage():
     )
 
 
-def pygame_screen_message(message,text_colour,screen_colour):
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    w, h = pygame.display.get_surface().get_size()
-    screen.fill(screen_colour)
-    font = pygame.font.SysFont("consolas", 48)
-    text = font.render(message, True, text_colour)
-    screen.blit(text,(100,100))
-    pygame.display.flip()
-    time.sleep(3)
-
 def educational_warning():
     screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
     font = pygame.font.SysFont("segoeprint", 20)
+    h,w = pygame.display.get
     screen.fill((0,0,0))
     content= ["...   Lucky this was an educational mock malware.", 
     " Corvus.exe is an educational example of how much control an exe can have."
@@ -226,8 +222,8 @@ def educational_warning():
     "Creator : Riley-D-1 ",
     "See the repoistry on my github with the name Corvus.exe "
     ]
-    y = h//2
-    w = w//2
+    y = (h//2)
+    w = (w//2)
     for item in content:
         for char in item:
             text = font.render(char, (255,255,255),y+1)
