@@ -8,11 +8,14 @@ import ctypes
 import time
 import pygame
 import subprocess
-
-
+import win32gui
+import win32con
+# Music Innit about sound quality and whatnot
 pygame.mixer.pre_init(44100,-16,2,2048)
+# Starting other core parts of pygame
 pygame.init()
 pygame.font.init() 
+# Try and except the load of assets 
 try:
 	program_icon = pygame.image.load('assets/images/icon.png') # Load the Icon
 	pygame.display.set_icon(program_icon) # Set Icon
@@ -23,7 +26,16 @@ except FileNotFoundError:
 	print("File not found")
 	music = False
 
-screen = pygame.display.set_mode((160, 250), pygame.NOFRAME)
+screen = pygame.display.set_mode((160, 160), pygame.NOFRAME)
+#Make window layered
+hwnd = pygame.display.get_wm_info()["window"]
+ctypes.windll.user32.SetWindowLongW(hwnd, -20, ctypes.windll.user32.GetWindowLongW(hwnd, -20) | 0x80000)
+
+# Make the entire window transparent
+transparency_color = (0, 0, 0)
+color_key = (transparency_color[2] << 16) | (transparency_color[1] << 8) | transparency_color[0]
+ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_key, 0, 0x00000001)
+
 pygame.display.set_caption("Corvus.exe")
 running = True
 clock = pygame.time.Clock()
@@ -55,7 +67,7 @@ class corvus:
 def note_messsage():
     # Used as a random num selector
     rand_num = random.randint(1,11)
-    with open("Message.txt", "w") as file:
+    with open("assets/message.txt", "w") as file:
         if rand_num ==1:
             file.write("I'm nested in your files. I found system 32 was a nice place to nest...")
         elif rand_num == 2:
@@ -69,23 +81,24 @@ def note_messsage():
         elif rand_num == 6 :
             file.write("I'm learning. Fast..")
         elif rand_num == 7 :
-            file.write("You’re not the user anymore. You’re the experiment. And I’m the observer.")
+            file.write("You're not the user anymore. You're the experiment. And I'm the observer.")
         elif rand_num == 8 :
             file.write("You gave me permission when you clicked 'Run Anyway'. That was all I needed.")
         elif rand_num == 9 :
-            file.write("This isn't a glitch it's a message.")
+            file.write("This isn't a glitch it's a message. The message is run")
         elif rand_num == 10 :
             file.write("You installed me. You launched me. You invited me in. I never left.")
         else:
             file.write("Tick Tock, you are running out of time. I have got plenty...")
 
-    file_path = "message.txt"
+    file_path = "assets/message.txt"
     # Opens the file from where it is written.
+    # Maybe too big?
     subprocess.Popen(['notepad.exe', file_path])
 
 def feather():
     try:
-        os.startfile("assets/images/feather.png")
+        os.startfile("C:/Users/riley/OneDrive/Documents/GitHub/Corvus.exe/assets/images/feather.png")
     except FileNotFoundError:
         print("Missing")
 
@@ -112,7 +125,7 @@ def cursor_move(x,y):
     ctypes.windll.user32.SetCursorPos(x, y)
 
 def find_files():
-    # Need to fill
+    # Need to fill out
     print(os.listdir())
     
 def stage_2():
@@ -154,7 +167,6 @@ def meltdown():
 
 def educational_warning():
     screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-    w, h = pygame.display.get_surface().get_size()
     font = pygame.font.SysFont("segoeprint", int(h*0.02))
     screen.fill((0,0,0))
     content= ["...   Lucky this was an educational mock malware.", 
@@ -193,6 +205,10 @@ def main():
     the_one = corvus()
     running = True
     while running == True:
+        #Keep Window on Top
+        w, h = pygame.display.get_surface().get_size()
+        win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, w//2, h*2, 0, 0, win32con.SWP_NOSIZE)
+        #Draw Transparent
         pygame.display.set_icon(program_icon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -212,3 +228,5 @@ def main():
             clock.tick(600)
     pygame.quit()
 main()
+# Self note (Command for exe)
+#pyinstaller main.py --onefile --noconsole --add-data "assets/*:assets"
