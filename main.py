@@ -26,7 +26,6 @@ try:
     pygame.mixer.music.load('assets/music/Crow_caw_1.mp3')
     pygame.mixer.music.set_volume(0.5)
     music = True
-    print("Icon loaded:", program_icon)
 except FileNotFoundError:
 	print("File not found")
 	music = False
@@ -34,8 +33,6 @@ except FileNotFoundError:
 pygame.display.set_caption("Corvus.exe")
 running = True
 clock = pygame.time.Clock()
-pygame.mixer.music.play()
-
 # Class for core methods of window
 class corvus:
     def __init__(self,x,y,speed):
@@ -135,9 +132,10 @@ def note_messsage():
     # Maybe too big?
     subprocess.Popen(['notepad.exe', file_path])
 
-def audio():
+def audio(music):
     # Done, Simple but it works
-    pygame.mixer.music.play()
+    if music ==  True:
+       pygame.mixer.music.play()
 
 def pygame_screen_message(message,text_colour,screen_colour):
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -162,10 +160,11 @@ def find_files():
     time.sleep(3)
     
 def meme():
-    meme_list = os.listdir("assets/images/memes")
+    cwd = os.getcwd()
+    meme_list = os.listdir(f"{cwd}/assets/images/memes/")
     meme = random.choice(meme_list)
-    os.startfile(meme)
-    print(meme)
+    os.startfile(f"{cwd}/assets/images/memes/{meme}")
+    time.sleep(5)
 
 def chaos(the_one):
     time.sleep(10)
@@ -173,7 +172,7 @@ def chaos(the_one):
     if temp_rand == 1:
         meme()
     elif temp_rand == 2:
-        audio()
+        audio(music)
     elif temp_rand == 3:
         the_one.cursor_steal()
     elif temp_rand == 4:
@@ -228,6 +227,8 @@ def educational_warning():
         for char in item:
             text = font.render(char, (255,255,255),y+1)
             screen.blit(text)
+
+            
 def meltdown():
     # Screen effects will go here
     print()
@@ -265,9 +266,9 @@ def main():
             running = False
         else:
             chaos(the_one)
-main()
+#main()
+meme()
 # Self note (Command for exe)
 # Worlds longest pyinstaller statement lol 
 #pyinstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico
-# Maybe?pyinstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico --hidden-import=win32gui --hidden-import=win32con --hidden-import=win32api
-# IT STILL WONT WORK AFTER AI? Maybe incompatiable for some reason going to install python 3.11
+# Have to use an older version to build for some reason? 3.11.8 
