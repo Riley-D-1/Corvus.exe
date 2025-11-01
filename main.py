@@ -10,6 +10,8 @@ import pygame
 import subprocess
 import win32gui
 import win32con
+import getpass
+
 # Music Innit about sound quality and whatnot
 pygame.mixer.pre_init(44100,-16,2,2048)
 # Starting other core parts of pygame
@@ -22,11 +24,13 @@ try:
 	pygame.mixer.music.load('assets/music/Crow_caw_1.mp3')
 	pygame.mixer.music.set_volume(0.5)
 	music = True
+
 except FileNotFoundError:
 	print("File not found")
 	music = False
 
 screen = pygame.display.set_mode((160, 160), pygame.NOFRAME)
+# Credit to https://github.com/munucrafts/PY-DesktopPet-Ducky for the info 
 #Make window layered
 hwnd = pygame.display.get_wm_info()["window"]
 ctypes.windll.user32.SetWindowLongW(hwnd, -20, ctypes.windll.user32.GetWindowLongW(hwnd, -20) | 0x80000)
@@ -46,20 +50,34 @@ class corvus:
     def __init__(self):
         self.x_pos = 1
         self.y_pos = 1
+        self.state = "idle"
     def move(self,x,y):
         self.x_pos += x
-        self.y_pos += y 
+        self.y_pos += y
     def anim_state(self,state):
-        if state == 1:
+        if state == "idle":
             background = pygame.image.load("assets/images/corvus.png").convert()
             screen.blit(background, (0, 0))
             pygame.display.flip()
-        elif state == 2:
+        elif state == "grab":
+            background = pygame.image.load("assets/images/corvus.png").convert()
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+        elif state == "walk_1":
+            background = pygame.image.load("assets/images/corvus.png").convert()
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+        elif state == "walk_2":
             background = pygame.image.load("assets/images/corvus.png").convert()
             screen.blit(background, (0, 0))
             pygame.display.flip()
         else:
-            print()
+            print("error")
+        self.state = state
+    def drag(self):
+        print(self.state)
+    def cursor_steal(self):
+        ctypes.windll.user32.SetCursorPos(self.x_pos, self.y_pos)
 
 # STUBS BABY
 # Stage 1
@@ -73,9 +91,9 @@ def note_messsage():
         elif rand_num == 2:
             file.write("Your firewall faltered. That was enough...")
         elif rand_num == 3:
-            file.write("Thank you for the warm invitation, the door was left wide open...")
+            file.write(f"Thank you for {getpass.getuser()} the warm invitation, the door was left wide open...")
         elif rand_num == 4:
-            file.write("I'm watching")
+            file.write(f"Hey {getpass.getuser()}, I'm watching")
         elif rand_num == 5:
             file.write("I'm everywhere. I am inevitable ")
         elif rand_num == 6 :
@@ -96,53 +114,39 @@ def note_messsage():
     # Maybe too big?
     subprocess.Popen(['notepad.exe', file_path])
 
-def feather():
-    try:
-        os.startfile("C:/Users/riley/OneDrive/Documents/GitHub/Corvus.exe/assets/images/feather.png")
-    except FileNotFoundError:
-        print("Missing")
-
 def audio():
     pygame.mixer.music.play()
 
-def stage_1(the_one):
-    the_one.anim_state(1)
-    time.sleep(10)
-    temp_num = random.randint(1,3)
-    if temp_num == 1:
-        feather()
-    elif temp_num == 2:
-        audio()
-    else:
-        note_messsage()
-# Stage 2
-def cursor_steal():
-    # Find center of window 
-    # Send to center of window 
-    print("stub")
-
-def cursor_move(x,y):
-    ctypes.windll.user32.SetCursorPos(x, y)
-
 def find_files():
     # Need to fill out
-    print(os.listdir())
-    
-def stage_2():
+    files = os.listdir(os.path.expanduser("~/Downloads"))
+    rand_file = random.choice(files)
+    print(f"Anything intreasting in {rand_file}?")
+
+def meme():
+    meme_list = os.listdir("assets/images/memes")
+    meme = random.choice(meme_list)
+    os.startfile(meme)
+    print(meme)
+
+def chaos(the_one):
     time.sleep(10)
     temp_rand = random.randint(1,5)
     if temp_rand == 1:
-        feather()
+        # Removed due to problems
+        #feather()
+        meme()
     elif temp_rand == 2:
         audio()
     elif temp_rand == 3:
-        cursor_steal()
+        the_one.cursor_steal()
     elif temp_rand == 4:
         find_files()
     else:
         note_messsage()
-# Stage 3
 
+# Stage 3
+# All preset sequence to scare those involved.
 def terminal_messsage():
     # AI Helped do this as my powershell knowledge is poor
     subprocess.Popen(
@@ -162,8 +166,14 @@ def terminal_messsage():
 
 
 def meltdown():
-    screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-    pygame.WINDOWSIZECHANGED
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    w, h = pygame.display.get_surface().get_size()
+    screen.fill((0, 0, 0))
+    font = pygame.font.SysFont("consolas", 48)
+    text = font.render("SYSTEM FAILURE: CAUSED BY CORVUS.EXE", True, (255, 0, 0))
+    screen.blit(text,(100,100))
+    pygame.display.flip()
+    time.sleep(3)
 
 def educational_warning():
     screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
@@ -191,7 +201,7 @@ def educational_warning():
 
             #print(char)
 
-def stage_3():
+def final_countdown(the_one):
     terminal_messsage()
     meltdown()
     educational_warning()
@@ -206,9 +216,7 @@ def main():
     running = True
     while running == True:
         #Keep Window on Top
-        w, h = pygame.display.get_surface().get_size()
-        win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, w//2, h*2, 0, 0, win32con.SWP_NOSIZE)
-        #Draw Transparent
+        #win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, w//2, h*2, 0, 0, win32con.SWP_NOSIZE)
         pygame.display.set_icon(program_icon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -216,17 +224,14 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     # Make 
+                    pygame.quit()
                     print("Escape key pressed!")
                     running = False
         if time_since_launch <= period:
-            stage_2(the_one)
-        elif time_since_launch <= period*2:
-            stage_3(the_one)
+            final_countdown(the_one)
+            running = False
         else:
-            stage_1(the_one)
-            pygame.display.flip()
-            clock.tick(600)
-    pygame.quit()
-main()
+            chaos(the_one)
+meltdown()
 # Self note (Command for exe)
 #pyinstaller main.py --onefile --noconsole --add-data "assets/*:assets"
