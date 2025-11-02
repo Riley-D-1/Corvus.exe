@@ -291,5 +291,5 @@ def main():
 main()
 # Self note (Command for exe)
 # Worlds longest pyinstaller statement lol 
-#pyinstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico
+#py -3.11 -m PyInstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico
 # Have to use an older version to build for some reason? 3.11.8 

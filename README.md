@@ -9,7 +9,9 @@
 (NOTE THIS IS A MOCK VIRUS LIKE DESKTOP GOOSE IT SHOULD NOT HARM FILES OR LEAVE PERMANENT DAMAGE)
 
 # Dear Stonemasons, reviewers and voters. I completely understand if you don't wish to run this program and I have provided a demo video to watch below
+### DEMO (Click to go to video)
 
+[![Watch the demo](icon.png)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4063823664375b23b85c70c36f7c91f795322b34_2025-11-02_22-37-43.mp4)
 ### Features
 - Steals your cursor
 - Opens notepads of messages
