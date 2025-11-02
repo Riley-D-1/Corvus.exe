@@ -47,7 +47,7 @@ class corvus:
     def cursor_steal(self):
         x,y = self.position
         print(x)
-        ctypes.windll.user32.SetCursorPos(x,y)
+        ctypes.windll.user32.SetCursorPos(int(x+13),int(y-9))
     # Removed everyhting cause it wouldn't work
 
 # Control the desktop transperency effect
@@ -103,6 +103,14 @@ def note_messsage():
     # Opens the file from where it is written.
     # Maybe too big?
     subprocess.Popen(['notepad.exe', file_path])
+    try:
+        notepad_thing_ = win32gui.FindWindow(None, "message.txt - Notepad")
+        flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+        win32gui.SetWindowPos(notepad_thing_, win32con.HWND_TOPMOST, 0, 0, 0, 0, flags)
+    except:
+        print("no")
+        pass
+    
 
 def audio(music):
     # Done, Simple but it works
@@ -110,7 +118,6 @@ def audio(music):
        pygame.mixer.music.play()
 
 def pygame_screen_message(message,text_colour,screen_colour,sleep_time,clear):
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     w, h = pygame.display.get_surface().get_size()
     screen.fill(screen_colour)
     font = pygame.font.SysFont("consolas", 48)
@@ -140,9 +147,21 @@ def find_files():
     # Done 
     files = os.listdir(os.path.expanduser("~/Downloads"))
     rand_file = random.choice(files)
-    transparency(False)
-    pygame_screen_message(f"Anything intreasting in {rand_file}?",(255,0,0),(0,0,0),2,False)
+    with open("assets/message.txt", "w") as file:
+        file.write(f"Anything intreasting in {rand_file}?")
+    file_path = "assets/message.txt"
+    # Opens the file from where it is written.
+    # Maybe too big?
+    subprocess.Popen(['notepad.exe', file_path])
+    try:
+        print("brought message to front")
+        notepad_thing = win32gui.FindWindow(None, "message.txt - Notepad")
+        flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+        win32gui.SetWindowPos(notepad_thing, win32con.HWND_TOPMOST, 0, 0, 0, 0, flags)
+    except:
+        pass
     
+
 def meme():
     # Done I belive
     cwd = os.getcwd()
@@ -150,6 +169,13 @@ def meme():
     meme_list = os.listdir(f"{cwd}/assets/images/memes/")
     meme = random.choice(meme_list)
     os.startfile(f"{cwd}/assets/images/memes/{meme}")
+    try:
+        print("brought meme to front")
+        meme_thing = win32gui.FindWindow(None, f"{meme}")
+        flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+        win32gui.SetWindowPos(meme_thing, win32con.HWND_TOPMOST, 0, 0, 0, 0, flags)
+    except:
+        pass
 
 def chaos(the_one):
     transparency(True)
@@ -171,31 +197,22 @@ def chaos(the_one):
 
 # Stage 3
 # All preset sequence to scare
-def terminal_messsage(final_message):
-    if final_message == True:
-            # AI Helped do this as my powershell knowledge is poor
-        subprocess.Popen(
-            'start cmd /c "'
-            'echo [Corvus.exe] Injecting payload... && '
-            'timeout /t 2 >nul && '
-            'echo [Corvus.exe] Disabling firewall... && '
-            'timeout /t 2 >nul && '
-            'echo [Corvus.exe] System integrity compromised... && '
-            'timeout /t 1 >nul && '
-            'echo. && '
-            'echo \x1b[91m[Corvus.exe] HAHAHAH MINE \x1b[0m && '
-            'timeout /t 3 >nul&& '
-            'exit"',
-            shell=True
-        )
-    else: 
-         subprocess.Popen(
-            'start cmd /c "'
-            'echo [Corvus.exe] Teleporting window...&& '
-            'timeout /t 3 >nul &&'
-            'exit"',
-            shell=True
-        )
+def terminal_messsage():
+    # AI Helped do this as my powershell knowledge is poor
+    subprocess.Popen(
+        'start cmd /c "'
+        'echo [Corvus.exe] Injecting payload... && '
+        'timeout /t 2 >nul && '
+        'echo [Corvus.exe] Disabling firewall... && '
+        'timeout /t 2 >nul && '
+        'echo [Corvus.exe] System integrity compromised... && '
+        'timeout /t 1 >nul && '
+        'echo. && '
+        'echo \x1b[91m[Corvus.exe] HAHAHAH MINE \x1b[0m && '
+        'timeout /t 3 >nul&& '
+        'exit"',
+        shell=True
+    )
 
 def educational_warning():
     w, h = pygame.display.get_surface().get_size()
@@ -226,29 +243,33 @@ def educational_warning():
         screen.blit(text,text_rect_2)
         pygame.display.flip()
         pygame.time.delay(3000)
+        screen.fill((0,0,0))
+        pygame.display.flip()
 
 def final_countdown():
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    transparency(True)
     transparency(False)
-    # Everything below is working and timed to a T
-    terminal_messsage(True)
+    # Everything below is working and timed to a 
+    terminal_messsage()
     for i in range(3):
         pygame.time.wait(4000)
         pygame.event.get() 
     print("ting")
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     pygame_screen_message("SYSTEM FAILURE: CAUSED BY CORVUS.EXE",(255,0,0),(0,0,0),3,True)
     educational_warning()
 
 def main():
     # Caculate time since launch to trigger diffrent stages. 
     time_since_launch = time.time()
-    period = 600
+    period = 100
     # Time period before starting next stage. Stage 2 takes 1*period and the 3rd stage is double
-    the_one = corvus(1,1)
+    the_one = corvus(screen_x-250, screen_y-300)
     running = True
     transparency(True)
     while running == True:
+        thing_idk_idc =  pygame.display.get_wm_info()["window"]
+        flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+        win32gui.SetWindowPos(thing_idk_idc, win32con.HWND_TOPMOST, 0, 0, 0, 0, flags)
         pygame.display.set_icon(program_icon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -267,8 +288,7 @@ def main():
             running = False
         else:
             chaos(the_one)
-#main()
-final_countdown()
+main()
 # Self note (Command for exe)
 # Worlds longest pyinstaller statement lol 
 #pyinstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico
