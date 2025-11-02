@@ -1,0 +1,3 @@
+pyautogui
+pygame
+pywin32

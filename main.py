@@ -11,6 +11,7 @@ import subprocess
 import win32gui
 import win32con
 import getpass
+import pyautogui
 
 # Music Innit about sound quality and whatnot
 pygame.mixer.pre_init(44100,-16,2,2048)
@@ -20,8 +21,11 @@ pygame.font.init()
 # Start the screen
 # Try and except the load of assets 
 screen = pygame.display.set_mode((160, 160), pygame.NOFRAME)
+screen_x,screen_y =pyautogui.size()
+Pygame_window_stuff = pygame.display.get_wm_info()["window"]
+win32gui.MoveWindow(Pygame_window_stuff, screen_x-250, screen_y-300, 160, 160, True)
 try:
-    program_icon = pygame.image.load('assets/images/icon-1.png') # Load the Icon
+    program_icon = pygame.image.load('assets/images/icon.png') # Load the Icon
     pygame.display.set_icon(program_icon) # Set Icon
     pygame.mixer.music.load('assets/music/Crow_caw_1.mp3')
     pygame.mixer.music.set_volume(0.5)
@@ -35,50 +39,16 @@ running = True
 clock = pygame.time.Clock()
 # Class for core methods of window
 class corvus:
-    def __init__(self,x,y,speed):
-        self.speed = speed
+    def __init__(self,x,y):
         self.position = pygame.Vector2(x,y)
-        self.state = "idle"
-    def anim_state(self,state):
-        if state == "idle":
-            background = pygame.image.load("assets/images/corvus.png").convert()
-            screen.blit(background, (0, 0))
-            pygame.display.flip()
-        elif state == "grab":
-            background = pygame.image.load("assets/images/corvus.png").convert()
-            screen.blit(background, (0, 0))
-            pygame.display.flip()
-        elif state == "walk_1":
-            background = pygame.image.load("assets/images/corvus.png").convert()
-            screen.blit(background, (0, 0))
-            pygame.display.flip()
-        elif state == "walk_2":
-            background = pygame.image.load("assets/images/corvus.png").convert()
-            screen.blit(background, (0, 0))
-            pygame.display.flip()
-        else:
-            print("error")
-        self.state = state
-    def drag(self,window):
-        # Need to fix
-        self.move()
-        self.anim_state()
+    # Changed my mind will use mind powers aka the lazy wayy to do everything
+    # Also cause my art time isn't counted and I have no time left
+    # removed window dragging cause buggy
     def cursor_steal(self):
-        # Fill this function with more infomation
-        ctypes.windll.user32.SetCursorPos(self.position[0], self.position[1])
-    def move(self,target_x,target_y):
-        # Position using pygame vectors stored 2 values (x and y respectively)
-        # By minusing or adding the speed to the value,
-        # we can create smooth walking to a target destinations
-        if target_x < self.position[0]:
-            self.position[0] -= self.speed
-        elif target_x > self.position[0]:
-            self.position[0] += self.speed
-
-        if target_y < self.position[1]:
-            self.position[1] -= self.speed
-        elif target_y > self.postion[1]:
-            self.position[1] += self.speed 
+        x,y = self.position
+        print(x)
+        ctypes.windll.user32.SetCursorPos(x,y)
+    # Removed everyhting cause it wouldn't work
 
 # Control the desktop transperency effect
 def transparency(on):
@@ -89,6 +59,7 @@ def transparency(on):
         ctypes.windll.user32.SetWindowLongW(hwnd, -20, ctypes.windll.user32.GetWindowLongW(hwnd, -20) | 0x80000)
 
         # Make the entire window transparent
+        # It has to be black so I have to change corvus so it works (just change from colour slightly)
         transparency_color = (0, 0, 0)
         color_key = (transparency_color[2] << 16) | (transparency_color[1] << 8) | transparency_color[0]
         ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_key, 0, 0x00000001)
@@ -147,26 +118,30 @@ def pygame_screen_message(message,text_colour,screen_colour,sleep_time,clear):
     text_rect = text.get_rect(center=(w//2, h//2))
     screen.blit(text,text_rect)
     pygame.display.flip()
-    time.sleep(sleep_time)
+    for i in range(10):
+        pygame.time.wait(sleep_time*100)
+        pygame.event.get()
     if clear == True:
         screen.fill((0,0,0))
         pygame.display.flip()
-        time.sleep(sleep_time)
+        for i in range(10):
+            pygame.time.wait(sleep_time*100)
+            pygame.event.get()
+
+def show_corvus(): 
+    corvus = pygame.image.load("assets/images/corvus.png").convert_alpha()
+    pygame.display.set_caption("Corvus.exe")
+    screen.blit(corvus, (0, 0))
+    pygame.display.flip()
+    print("showing")
 
 
 def find_files():
     # Done 
     files = os.listdir(os.path.expanduser("~/Downloads"))
     rand_file = random.choice(files)
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    w, h = pygame.display.get_surface().get_size()
-    screen.fill((0, 0, 0))
-    font = pygame.font.SysFont("consolas", 48)
-    text = font.render(f"Anything intreasting in {rand_file}?", True, (255, 0, 0))
-    text_rect_idk = text.get_rect(center=(w//2, h//2))
-    screen.blit(text,text_rect_idk)
-    pygame.display.flip()
-    time.sleep(2)
+    transparency(False)
+    pygame_screen_message(f"Anything intreasting in {rand_file}?",(255,0,0),(0,0,0),2,False)
     
 def meme():
     # Done I belive
@@ -177,7 +152,11 @@ def meme():
     os.startfile(f"{cwd}/assets/images/memes/{meme}")
 
 def chaos(the_one):
-    time.sleep(10)
+    transparency(True)
+    for i in range(5):
+        pygame.time.wait(2000)
+        pygame.event.get()
+        show_corvus()
     temp_rand = random.randint(1,5)
     if temp_rand == 1:
         meme()
@@ -192,27 +171,33 @@ def chaos(the_one):
 
 # Stage 3
 # All preset sequence to scare
-def terminal_messsage():
-    # AI Helped do this as my powershell knowledge is poor
-    # Launch a separate terminal window with a custom title
-    subprocess.Popen(
-        'start cmd /c "'
-        'echo [Corvus.exe] Injecting payload... && '
-        'timeout /t 2 >nul && '
-        'echo [Corvus.exe] Disabling firewall... && '
-        'timeout /t 2 >nul && '
-        'echo [Corvus.exe] System integrity compromised... && '
-        'timeout /t 1 >nul && '
-        'echo. && '
-        'echo \x1b[91m[Corvus.exe] HAHAHAH MINE \x1b[0m && '
-        'timeout /t 3 >nul "',
-        #'exit"',
-        shell=True
-    )
-
+def terminal_messsage(final_message):
+    if final_message == True:
+            # AI Helped do this as my powershell knowledge is poor
+        subprocess.Popen(
+            'start cmd /c "'
+            'echo [Corvus.exe] Injecting payload... && '
+            'timeout /t 2 >nul && '
+            'echo [Corvus.exe] Disabling firewall... && '
+            'timeout /t 2 >nul && '
+            'echo [Corvus.exe] System integrity compromised... && '
+            'timeout /t 1 >nul && '
+            'echo. && '
+            'echo \x1b[91m[Corvus.exe] HAHAHAH MINE \x1b[0m && '
+            'timeout /t 3 >nul&& '
+            'exit"',
+            shell=True
+        )
+    else: 
+         subprocess.Popen(
+            'start cmd /c "'
+            'echo [Corvus.exe] Teleporting window...&& '
+            'timeout /t 3 >nul &&'
+            'exit"',
+            shell=True
+        )
 
 def educational_warning():
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     w, h = pygame.display.get_surface().get_size()
     screen.fill((0, 0, 0))
     font = pygame.font.SysFont("segoeprint", 20)
@@ -236,35 +221,22 @@ def educational_warning():
     ]
 
     for item in content:
-        pygame.event.get()
         text = font.render(item, True, (255,255,255))
         text_rect_2 = text.get_rect(center=(w//2, h//2))
         screen.blit(text,text_rect_2)
         pygame.display.flip()
         pygame.time.delay(3000)
-        screen.fill((0,0,0))
-        pygame.display.flip()
-
-            
-def meltdown():
-    # Inspo - https://dev.to/chrisgreening/simulating-simple-crt-and-glitch-effects-in-pygame-1mf1
-    w,h = pygame.display.get_surface().get_size()
-    
-    
-
 
 def final_countdown():
-    meltdown()
-    # Everything below is working and timed to a T
-    terminal_messsage()
-    time.sleep(4) 
-    pygame.event.get() 
-    time.sleep(4)
-    pygame.event.get()  
-    time.sleep(4)
-    pygame.event.get()
-    print("ting")
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    transparency(True)
     transparency(False)
+    # Everything below is working and timed to a T
+    terminal_messsage(True)
+    for i in range(3):
+        pygame.time.wait(4000)
+        pygame.event.get() 
+    print("ting")
     pygame_screen_message("SYSTEM FAILURE: CAUSED BY CORVUS.EXE",(255,0,0),(0,0,0),3,True)
     educational_warning()
 
@@ -273,30 +245,30 @@ def main():
     time_since_launch = time.time()
     period = 600
     # Time period before starting next stage. Stage 2 takes 1*period and the 3rd stage is double
-    the_one = corvus(1,1,1)
+    the_one = corvus(1,1)
     running = True
     transparency(True)
     while running == True:
-        #Keep Window on Top
         pygame.display.set_icon(program_icon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 print("NOPE")
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    # Make 
                     pygame.quit()
                     print("Escape key pressed!")
                     running = False
-        # swapped < to > for testing.
-        #if time.time() - time_since_launch >= period:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Testing ways to remove pythonm
+                print("Congrats you clicked")
+        if time.time() - time_since_launch >= period:
             final_countdown()
-            print("Done")
-            time.sleep(1)
+            print("Completed")
             running = False
-        #else:
-        #    chaos(the_one)
-main()
+        else:
+            chaos(the_one)
+#main()
+final_countdown()
 # Self note (Command for exe)
 # Worlds longest pyinstaller statement lol 
 #pyinstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico
