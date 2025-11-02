@@ -60,11 +60,12 @@ class corvus:
             print("error")
         self.state = state
     def drag(self,window):
+        # Need to fix
         self.move()
         self.anim_state()
     def cursor_steal(self):
         # Fill this function with more infomation
-        ctypes.windll.user32.SetCursorPos(self.x_pos, self.y_pos)
+        ctypes.windll.user32.SetCursorPos(self.position[0], self.position[1])
     def move(self,target_x,target_y):
         # Position using pygame vectors stored 2 values (x and y respectively)
         # By minusing or adding the speed to the value,
@@ -81,10 +82,10 @@ class corvus:
 
 # Control the desktop transperency effect
 def transparency(on):
+    hwnd = pygame.display.get_wm_info()["window"]
     if on == True:
         # Credit to https://github.com/munucrafts/PY-DesktopPet-Ducky for the info 
         #Make window layered
-        hwnd = pygame.display.get_wm_info()["window"]
         ctypes.windll.user32.SetWindowLongW(hwnd, -20, ctypes.windll.user32.GetWindowLongW(hwnd, -20) | 0x80000)
 
         # Make the entire window transparent
@@ -137,17 +138,24 @@ def audio(music):
     if music ==  True:
        pygame.mixer.music.play()
 
-def pygame_screen_message(message,text_colour,screen_colour):
+def pygame_screen_message(message,text_colour,screen_colour,sleep_time,clear):
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     w, h = pygame.display.get_surface().get_size()
     screen.fill(screen_colour)
     font = pygame.font.SysFont("consolas", 48)
     text = font.render(message, True, text_colour)
-    screen.blit(text,(100,100))
+    text_rect = text.get_rect(center=(w//2, h//2))
+    screen.blit(text,text_rect)
     pygame.display.flip()
-    time.sleep(3)
+    time.sleep(sleep_time)
+    if clear == True:
+        screen.fill((0,0,0))
+        pygame.display.flip()
+        time.sleep(sleep_time)
+
 
 def find_files():
+    # Done 
     files = os.listdir(os.path.expanduser("~/Downloads"))
     rand_file = random.choice(files)
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -155,16 +163,18 @@ def find_files():
     screen.fill((0, 0, 0))
     font = pygame.font.SysFont("consolas", 48)
     text = font.render(f"Anything intreasting in {rand_file}?", True, (255, 0, 0))
-    screen.blit(text,(w//2,h//2))
+    text_rect_idk = text.get_rect(center=(w//2, h//2))
+    screen.blit(text,text_rect_idk)
     pygame.display.flip()
-    time.sleep(3)
+    time.sleep(2)
     
 def meme():
+    # Done I belive
     cwd = os.getcwd()
+    # To ensure it works across diffrent directives
     meme_list = os.listdir(f"{cwd}/assets/images/memes/")
     meme = random.choice(meme_list)
     os.startfile(f"{cwd}/assets/images/memes/{meme}")
-    time.sleep(5)
 
 def chaos(the_one):
     time.sleep(10)
@@ -184,6 +194,7 @@ def chaos(the_one):
 # All preset sequence to scare
 def terminal_messsage():
     # AI Helped do this as my powershell knowledge is poor
+    # Launch a separate terminal window with a custom title
     subprocess.Popen(
         'start cmd /c "'
         'echo [Corvus.exe] Injecting payload... && '
@@ -194,52 +205,68 @@ def terminal_messsage():
         'timeout /t 1 >nul && '
         'echo. && '
         'echo \x1b[91m[Corvus.exe] HAHAHAH MINE \x1b[0m && '
-        'timeout /t 3 >nul && '
-        'exit"',
+        'timeout /t 3 >nul "',
+        #'exit"',
         shell=True
     )
 
 
 def educational_warning():
-    screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    w, h = pygame.display.get_surface().get_size()
+    screen.fill((0, 0, 0))
     font = pygame.font.SysFont("segoeprint", 20)
-    h,w = pygame.display.get
-    screen.fill((0,0,0))
     content= ["...   Lucky this was an educational mock malware.", 
-    " Corvus.exe is an educational example of how much control an exe can have."
+    " Corvus.exe is an educational example of how much control an exe can have.",
     "It is a nightmare. This was created for the theme spooky on hackclub siege and its spooky alright...",
-    "I'm a pretty average coder but it takes 3 lines to delete system 32 ruining your windows altogether",
-    "Linux is even easier requiring just 1 line to nuke its crucial files.",
+    "I'm a pretty average coder but it takes 3 lines to nuke window's critical files",
     "You want even more spooky?",
     "Every day, 560,000 new pieces of malware are detected, adding to the over 1 billion malware programs already in circulation.",
-    "Not scared yet?"
+    "Not scared yet?",
     "With this program I could have started stealing your files all while your keyboard and mouse are disabled",
     "Imagine what an experienced hacker could do!",
     "Please take this as an important reminder about the importance of cybersecurity.",
-    "                                                                                 ",
     "Credits:",
     "Creator : Riley-D-1 ",
-    "See the repoistry on my github with the name Corvus.exe "
+    "Art : Riley-D-1 ",
+    "Crow calls :  https://www.youtube.com/watch?v=XZrh-zK1nJ0 - Free Sounds Library",
+    "Code : Riley-D-1  ",
+    "See the repoistry on my github with the name Corvus.exe ",
+    "Thank you! And keep safe out there!"
     ]
-    y = (h//2)
-    w = (w//2)
+
     for item in content:
-        for char in item:
-            text = font.render(char, (255,255,255),y+1)
-            screen.blit(text)
+        pygame.event.get()
+        text = font.render(item, True, (255,255,255))
+        text_rect_2 = text.get_rect(center=(w//2, h//2))
+        screen.blit(text,text_rect_2)
+        pygame.display.flip()
+        pygame.time.delay(3000)
+        screen.fill((0,0,0))
+        pygame.display.flip()
 
             
 def meltdown():
-    # Screen effects will go here
-    print()
+    # Inspo - https://dev.to/chrisgreening/simulating-simple-crt-and-glitch-effects-in-pygame-1mf1
+    w,h = pygame.display.get_surface().get_size()
+    
+    
 
 
 def final_countdown():
-    terminal_messsage()
     meltdown()
-    pygame_screen_message("SYSTEM FAILURE: CAUSED BY CORVUS.EXE",(255,0,0),(0,0,0))
+    # Everything below is working and timed to a T
+    terminal_messsage()
+    time.sleep(4) 
+    pygame.event.get() 
+    time.sleep(4)
+    pygame.event.get()  
+    time.sleep(4)
+    pygame.event.get()
+    print("ting")
+    transparency(False)
+    pygame_screen_message("SYSTEM FAILURE: CAUSED BY CORVUS.EXE",(255,0,0),(0,0,0),3,True)
     educational_warning()
-
 
 def main():
     # Caculate time since launch to trigger diffrent stages. 
@@ -248,9 +275,9 @@ def main():
     # Time period before starting next stage. Stage 2 takes 1*period and the 3rd stage is double
     the_one = corvus(1,1,1)
     running = True
+    transparency(True)
     while running == True:
         #Keep Window on Top
-        #win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, w//2, h*2, 0, 0, win32con.SWP_NOSIZE)
         pygame.display.set_icon(program_icon) # Set Icon
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -261,13 +288,15 @@ def main():
                     pygame.quit()
                     print("Escape key pressed!")
                     running = False
-        if time_since_launch <= period:
-            final_countdown(the_one)
+        # swapped < to > for testing.
+        #if time.time() - time_since_launch >= period:
+            final_countdown()
+            print("Done")
+            time.sleep(1)
             running = False
-        else:
-            chaos(the_one)
-#main()
-meme()
+        #else:
+        #    chaos(the_one)
+main()
 # Self note (Command for exe)
 # Worlds longest pyinstaller statement lol 
 #pyinstaller main.py --onefile --noconsole --add-data "assets/*;assets" --icon=assets/images/icon.ico
